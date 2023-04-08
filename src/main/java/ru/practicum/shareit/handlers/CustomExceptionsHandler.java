@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import ru.practicum.shareit.exceptions.EmailAlreadyInUseException;
 import ru.practicum.shareit.exceptions.EntityNotFoundException;
 import ru.practicum.shareit.exceptions.ErrorResponse;
+import ru.practicum.shareit.exceptions.ItemNotBelongsUserException;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -51,6 +52,13 @@ public class CustomExceptionsHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EmailAlreadyInUseException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleEmailAlreadyInUseException(EmailAlreadyInUseException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(ItemNotBelongsUserException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleItemNotBelongsUserException(ItemNotBelongsUserException e) {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
