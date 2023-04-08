@@ -56,7 +56,7 @@ public class InMemoryUserService implements UserService {
     @Override
     public void deleteUser(Integer userId) {
         if (!userRepository.isUserExists(userId)) {
-
+            throw new EntityNotFoundException(String.format("Пользователь с таким id %d не найден", userId));
         }
         userRepository.deleteUser(userId);
     }

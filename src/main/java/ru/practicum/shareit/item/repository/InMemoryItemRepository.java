@@ -1,10 +1,9 @@
 package ru.practicum.shareit.item.repository;
 
-import org.springframework.objenesis.ObjenesisException;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.model.Item;
+
 import java.util.*;
 
 import static java.util.Objects.nonNull;
