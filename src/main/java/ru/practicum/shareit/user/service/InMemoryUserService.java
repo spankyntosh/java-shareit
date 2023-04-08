@@ -34,7 +34,7 @@ public class InMemoryUserService implements UserService {
 
     @Override
     public UserDto createUser(UserDto user) {
-        return toUserDto(userRepository.createUser(DtoToModel(user, null)));
+        return toUserDto(userRepository.createUser(dtoToModel(user, null)));
     }
 
     @Override

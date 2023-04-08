@@ -18,7 +18,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static User DtoToModel(UserDto userDto, Integer userId) {
+    public static User dtoToModel(UserDto userDto, Integer userId) {
         return new User()
                 .toBuilder()
                 .id(userId)

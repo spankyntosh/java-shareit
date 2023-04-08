@@ -8,8 +8,12 @@ import java.util.Collection;
 public interface ItemService {
 
     ItemDto getItem(Integer itemId);
+
     Collection<ItemDto> getUserItems(Integer userId);
+
     ItemDto createItem(ItemDto itemDto, Integer userId);
+
     ItemDto updateItem(UpdateItemDto dto, Integer userId, Integer itemId);
+
     Collection<ItemDto> searchItems(String searchText);
 }
