@@ -62,7 +62,7 @@ public class InMemoryItemService implements ItemService {
             throw new EntityNotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
         Collection<Item> userItems = itemRepository.getUserItems(userId);
-        if (isNull(userItems) || userItems.stream().noneMatch(item -> item.getId() == itemId)) {
+        if (isNull(userItems) || userItems.stream().noneMatch(item -> item.getId().intValue() == itemId.intValue())) {
             throw new ItemNotBelongsUserException(String.format("Вещь с id %d не принадлежит пользователю с id %d", itemId, userId));
         }
         return toItemDto(itemRepository.updateItem(itemDto, userId, itemId));

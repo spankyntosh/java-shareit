@@ -19,7 +19,7 @@ public class InMemoryItemRepository implements ItemRepository {
     public Optional<Item> getItem(Integer itemId) {
         return items.values().stream()
                 .flatMap(Collection::stream)
-                .filter(item -> item.getId() == itemId)
+                .filter(item -> item.getId().intValue() == itemId.intValue())
                 .findFirst();
     }
 
@@ -42,7 +42,9 @@ public class InMemoryItemRepository implements ItemRepository {
     @Override
     public Item updateItem(UpdateItemDto item, Integer userId, Integer itemId) {
         List<Item> userItems = items.get(userId);
-        Item updatedItem = userItems.stream().filter(listItem -> listItem.getId() == itemId).findFirst().get();
+        Item updatedItem = userItems.stream().filter(listItem -> listItem.getId().intValue() == itemId.intValue())
+                .findFirst()
+                .get();
         if (nonNull(item.getName())) {
             updatedItem.setName(item.getName());
         }
