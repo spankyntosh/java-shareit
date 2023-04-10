@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 
@@ -19,9 +19,9 @@ import javax.validation.constraints.NotNull;
 @Builder(toBuilder = true)
 public class ItemDto {
     private Integer id;
-    @NotEmpty
+    @NotBlank
     private String name;
-    @NotEmpty
+    @NotBlank
     private String description;
     @NotNull
     private Boolean available;
