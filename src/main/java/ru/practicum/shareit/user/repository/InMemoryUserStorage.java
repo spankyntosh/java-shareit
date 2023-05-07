@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Repository
-public class InMemoryUserRepository implements UserRepository {
+public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Integer, User> users = new HashMap<>();
     private final Map<Integer, String> emailUserIdMap = new HashMap<>();

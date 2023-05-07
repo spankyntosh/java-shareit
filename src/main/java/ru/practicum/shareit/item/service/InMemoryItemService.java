@@ -8,8 +8,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.item.repository.ItemStorage;
+import ru.practicum.shareit.user.repository.UserStorage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,22 +19,22 @@ import static java.util.stream.Collectors.toList;
 import static ru.practicum.shareit.item.mapper.ItemMapper.toItemDto;
 import static ru.practicum.shareit.item.mapper.ItemMapper.toModel;
 
-@Service
+@Service("inMemoryItemService")
 public class InMemoryItemService implements ItemService {
 
-    private final ItemRepository itemRepository;
-    private final UserRepository userRepository;
+    private final ItemStorage itemStorage;
+    private final UserStorage userStorage;
 
     @Autowired
-    public InMemoryItemService(ItemRepository itemRepository, UserRepository userRepository) {
-        this.itemRepository = itemRepository;
-        this.userRepository = userRepository;
+    public InMemoryItemService(ItemStorage itemStorage, UserStorage userStorage) {
+        this.itemStorage = itemStorage;
+        this.userStorage = userStorage;
     }
 
     @Override
     public ItemDto getItem(Integer itemId) {
-        if (itemRepository.getItem(itemId).isPresent()) {
-            return toItemDto(itemRepository.getItem(itemId).get());
+        if (itemStorage.getItem(itemId).isPresent()) {
+            return toItemDto(itemStorage.getItem(itemId).get());
         } else {
             throw new EntityNotFoundException(String.format("Предмет с id %d не найден", itemId));
         }
@@ -42,30 +42,30 @@ public class InMemoryItemService implements ItemService {
 
     @Override
     public Collection<ItemDto> getUserItems(Integer userId) {
-        if (!userRepository.isUserExists(userId)) {
+        if (!userStorage.isUserExists(userId)) {
             throw new EntityNotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
-        return itemRepository.getUserItems(userId).stream().map(ItemMapper::toItemDto).collect(toList());
+        return itemStorage.getUserItems(userId).stream().map(ItemMapper::toItemDto).collect(toList());
     }
 
     @Override
     public ItemDto createItem(ItemDto itemDto, Integer userId) {
-        if (!userRepository.isUserExists(userId)) {
+        if (!userStorage.isUserExists(userId)) {
             throw new EntityNotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
-        return toItemDto(itemRepository.createItem(toModel(itemDto, userRepository.getUserById(userId)), userId));
+        return toItemDto(itemStorage.createItem(toModel(itemDto, userStorage.getUserById(userId)), userId));
     }
 
     @Override
     public ItemDto updateItem(UpdateItemDto itemDto, Integer userId, Integer itemId) {
-        if (!userRepository.isUserExists(userId)) {
+        if (!userStorage.isUserExists(userId)) {
             throw new EntityNotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
-        Collection<Item> userItems = itemRepository.getUserItems(userId);
+        Collection<Item> userItems = itemStorage.getUserItems(userId);
         if (isNull(userItems) || userItems.stream().noneMatch(item -> item.getId().intValue() == itemId.intValue())) {
             throw new ItemNotBelongsUserException(String.format("Вещь с id %d не принадлежит пользователю с id %d", itemId, userId));
         }
-        return toItemDto(itemRepository.updateItem(itemDto, userId, itemId));
+        return toItemDto(itemStorage.updateItem(itemDto, userId, itemId));
     }
 
     @Override
@@ -73,6 +73,6 @@ public class InMemoryItemService implements ItemService {
         if (searchText.isBlank()) {
             return new ArrayList<ItemDto>();
         }
-        return itemRepository.searchItems(searchText).stream().map(ItemMapper::toItemDto).collect(toList());
+        return itemStorage.searchItems(searchText).stream().map(ItemMapper::toItemDto).collect(toList());
     }
 }

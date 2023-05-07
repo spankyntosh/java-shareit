@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
@@ -18,11 +19,11 @@ import java.util.Collection;
 @Slf4j
 public class ItemController {
 
-    private static int createRequestCounter = 0;
+    @Qualifier("dbItemService")
     private final ItemService itemService;
 
     @Autowired
-    public ItemController(ItemService itemService) {
+    public ItemController(@Qualifier("dbItemService") ItemService itemService) {
         this.itemService = itemService;
     }
 
@@ -35,8 +36,6 @@ public class ItemController {
     @PostMapping
     ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Integer id, @Valid @RequestBody ItemDto itemDto) {
         log.info(String.format("Пришёл запрос на создание вещи у пользователя с id %d", id));
-        System.out.println("Количество общее количество запросов по созданию предмета: " + createRequestCounter);
-        createRequestCounter++;
         return itemService.createItem(itemDto, id);
     }
 

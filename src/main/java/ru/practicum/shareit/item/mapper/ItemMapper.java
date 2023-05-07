@@ -6,7 +6,10 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.Collection;
+
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
@@ -29,5 +32,9 @@ public class ItemMapper {
                 .available(isNull(itemDto.getAvailable()) || itemDto.getAvailable())
                 .description(itemDto.getDescription())
                 .build();
+    }
+
+    public static Collection<ItemDto> toItemDtos(Collection<Item> items) {
+        return items.stream().map(item -> toItemDto(item)).collect(toList());
     }
 }
