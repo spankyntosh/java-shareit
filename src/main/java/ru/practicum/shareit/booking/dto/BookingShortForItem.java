@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 public class BookingShortForItem {
 
     private int itemId;
-    private int bookingId;
+    private int id;
     private int bookerId;
     private LocalDateTime start;
     private LocalDateTime end;
 
     public BookingShortForItem(int itemId, int bookingId, int bookerId, LocalDateTime start, LocalDateTime end) {
         this.itemId = itemId;
-        this.bookingId = bookingId;
+        this.id = bookingId;
         this.bookerId = bookerId;
         this.start = start;
         this.end = end;

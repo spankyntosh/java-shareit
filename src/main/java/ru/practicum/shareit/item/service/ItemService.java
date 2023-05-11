@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public interface ItemService {
 
-    ItemDto getItem(Integer itemId);
+    ItemDto getItem(Integer userId, Integer itemId);
 
     Collection<ItemDto> getUserItems(Integer userId);
 

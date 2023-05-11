@@ -32,7 +32,7 @@ public class InMemoryItemService implements ItemService {
     }
 
     @Override
-    public ItemDto getItem(Integer itemId) {
+    public ItemDto getItem(Integer userId, Integer itemId) {
         if (itemStorage.getItem(itemId).isPresent()) {
             return toItemDto(itemStorage.getItem(itemId).get());
         } else {

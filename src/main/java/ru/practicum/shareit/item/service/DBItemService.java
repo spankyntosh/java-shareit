@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingShortForItem;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -16,13 +15,14 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 
+import static java.util.Comparator.comparing;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toList;
 import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
 @Service("dbItemService")
-public class DBItemService implements ItemService{
+public class DBItemService implements ItemService {
 
     ItemRepository itemRepository;
     UserRepository userRepository;
@@ -38,9 +38,18 @@ public class DBItemService implements ItemService{
     }
 
     @Override
-    public ItemDto getItem(Integer itemId) {
-        return toItemDto(itemRepository.findById(itemId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Предмет с id %d не найден", itemId))));
+    public ItemDto getItem(Integer userId, Integer itemId) {
+
+        Item itemOfInterest = itemRepository.findById(itemId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Предмет с id %d не найден", itemId)));
+        ItemDto itemDto = toItemDto(itemOfInterest);
+
+        if (itemOfInterest.getOwner().getId().intValue() == userId.intValue()) {
+            itemDto.setLastBooking(bookingRepository.findItemLastBookings(itemOfInterest).stream().findFirst().orElse(null));
+            itemDto.setNextBooking(bookingRepository.findItemNextBookings(itemOfInterest).stream().findFirst().orElse(null));
+        }
+
+        return itemDto;
     }
 
     @Override
@@ -52,7 +61,8 @@ public class DBItemService implements ItemService{
         Collection<BookingShortForItem> previousBookings = bookingRepository.findLastBookings(userItems);
         Collection<BookingShortForItem> followingBookings = bookingRepository.findNextBookings(userItems);
 
-        userItems.stream()
+        return userItems.stream()
+                .sorted(comparing(Item::getId))
                 .map(item -> {
                     ItemDto itemDto = toItemDto(item);
                     itemDto.setLastBooking(previousBookings.stream()
@@ -60,13 +70,12 @@ public class DBItemService implements ItemService{
                             .findFirst()
                             .orElse(null));
                     itemDto.setNextBooking(followingBookings.stream()
-                            .filter(booking -> item.getId().intValue() == booking.getBookingId())
+                            .filter(booking -> item.getId().intValue() == booking.getItemId())
                             .findFirst()
                             .orElse(null));
                     return itemDto;
-                });
+                }).collect(toList());
 
-        return toItemDtos(itemRepository.findAllByOwnerId(userId));
     }
 
     @Override
