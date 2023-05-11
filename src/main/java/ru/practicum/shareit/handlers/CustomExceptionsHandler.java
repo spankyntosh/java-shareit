@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.practicum.shareit.exceptions.EmailAlreadyInUseException;
-import ru.practicum.shareit.exceptions.EntityNotFoundException;
-import ru.practicum.shareit.exceptions.ErrorResponse;
-import ru.practicum.shareit.exceptions.ItemNotBelongsUserException;
+import ru.practicum.shareit.exceptions.*;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -59,6 +56,48 @@ public class CustomExceptionsHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ItemNotBelongsUserException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleItemNotBelongsUserException(ItemNotBelongsUserException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(ItemNotAvailableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleItemNotAvailableException(ItemNotAvailableException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(UserBookingHisOwnItemException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUserBookingHisOwnItemException(UserBookingHisOwnItemException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(NotOwnerApproveException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotOwnerApproveException(NotOwnerApproveException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(BookingIllegalAccessException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleBookingIllegalAccessException(BookingIllegalAccessException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(WrongStatusException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleWrongStatusException(WrongStatusException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(BookingDateException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookingDateException(BookingDateException e) {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }

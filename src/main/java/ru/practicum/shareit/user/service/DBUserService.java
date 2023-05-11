@@ -36,7 +36,7 @@ public class DBUserService implements UserService{
     @Override
     public UserDto createUser(UserDto user) {
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new EmailAlreadyInUseException("Данный почтовый адрес уже используется");
+            //throw new EmailAlreadyInUseException("Данный почтовый адрес уже используется");
         }
         return toUserDto(userRepository.save(dtoToModel(user, null)));
     }
