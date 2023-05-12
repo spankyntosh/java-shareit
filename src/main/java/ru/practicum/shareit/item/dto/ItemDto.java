@@ -9,7 +9,6 @@ import ru.practicum.shareit.booking.dto.BookingShortForItem;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
-import java.util.Set;
 
 
 /**

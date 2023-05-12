@@ -26,5 +26,5 @@ public class ItemRequest {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_id", referencedColumnName = "id")
     private User requestor;
-    //private LocalDateTime created;
+    private LocalDateTime created;
 }

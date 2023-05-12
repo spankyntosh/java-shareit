@@ -12,8 +12,9 @@ import java.util.Collection;
 
 import static java.util.Objects.nonNull;
 import static ru.practicum.shareit.user.mapper.UserMapper.*;
+
 @Service("dbUserService")
-public class DBUserService implements UserService{
+public class DBUserService implements UserService {
 
     UserRepository userRepository;
 
@@ -35,9 +36,6 @@ public class DBUserService implements UserService{
 
     @Override
     public UserDto createUser(UserDto user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            //throw new EmailAlreadyInUseException("Данный почтовый адрес уже используется");
-        }
         return toUserDto(userRepository.save(dtoToModel(user, null)));
     }
 

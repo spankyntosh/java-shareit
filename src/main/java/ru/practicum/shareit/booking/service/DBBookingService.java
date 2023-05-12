@@ -69,7 +69,7 @@ public class DBBookingService implements BookingService {
             throw new EntityNotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
         Booking approvingBooking = bookingRepository.findById(bookingId)
-                .orElseThrow(() ->new EntityNotFoundException(String.format("Бронирование с id %d не найдено", bookingId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Бронирование с id %d не найдено", bookingId)));
         if (!(approvingBooking.getItem().getOwner().getId().intValue() == userId)) {
             throw new NotOwnerApproveException("подтверждение бронирования должно производиться владельцем");
         }
@@ -90,7 +90,7 @@ public class DBBookingService implements BookingService {
             throw new EntityNotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
         Booking requestedBooking = bookingRepository.findById(bookingId)
-                .orElseThrow(() ->new EntityNotFoundException(String.format("Бронирование с id %d не найдено", bookingId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Бронирование с id %d не найдено", bookingId)));
         boolean isUserOwner = requestedBooking.getItem().getOwner().getId().intValue() == userId.intValue();
         boolean isUserBooker = requestedBooking.getBooker().getId().intValue() == userId.intValue();
         if (!(isUserOwner | isUserBooker)) {
@@ -115,7 +115,7 @@ public class DBBookingService implements BookingService {
             case CURRENT:
                 return userBookings
                         .stream()
-                        .filter(booking -> booking.getStart().isBefore(now) & booking.getEnd().isAfter(now))
+                        .filter(booking -> booking.getStart().isBefore(now) && booking.getEnd().isAfter(now))
                         .collect(toList());
             case PAST:
                 return userBookings
@@ -138,7 +138,7 @@ public class DBBookingService implements BookingService {
                         .filter(booking -> booking.getStatus() == Status.REJECTED)
                         .collect(toList());
             default:
-                return  userBookings;
+                return userBookings;
         }
     }
 
@@ -157,7 +157,7 @@ public class DBBookingService implements BookingService {
             case CURRENT:
                 return userItems
                         .stream()
-                        .filter(booking -> booking.getStart().isBefore(now) & booking.getEnd().isAfter(now))
+                        .filter(booking -> booking.getStart().isBefore(now) && booking.getEnd().isAfter(now))
                         .collect(toList());
             case PAST:
                 return userItems
@@ -180,7 +180,7 @@ public class DBBookingService implements BookingService {
                         .filter(booking -> booking.getStatus() == Status.REJECTED)
                         .collect(toList());
             default:
-                return  userItems;
+                return userItems;
         }
 
 
