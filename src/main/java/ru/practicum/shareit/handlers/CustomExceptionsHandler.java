@@ -90,14 +90,21 @@ public class CustomExceptionsHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(WrongStatusException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleWrongStatusException(WrongStatusException e) {
+    public UnknownStatusResponse handleWrongStatusException(WrongStatusException e) {
         log.warn(e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new UnknownStatusResponse(e.getMessage());
     }
 
     @ExceptionHandler(BookingDateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBookingDateException(BookingDateException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(ItemCommentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleItemCommentException(ItemCommentException e) {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }

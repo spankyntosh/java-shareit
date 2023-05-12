@@ -37,4 +37,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("SELECT new ru.practicum.shareit.booking.dto.BookingShortForItem(b.item.id, b.id, b.booker.id, b.start, b.end) FROM Booking AS b WHERE item IN :item AND CURRENT_TIMESTAMP > b.start AND b.status = 'APPROVED' ORDER BY b.start DESC")
     Collection<BookingShortForItem> findItemLastBookings(@Param("item") Item userItem);
+
+    @Query("SELECT b FROM Booking as b WHERE b.booker.id = :id")
+    Collection<Booking> findAllByBookerId(@Param("id") int bookerId);
 }

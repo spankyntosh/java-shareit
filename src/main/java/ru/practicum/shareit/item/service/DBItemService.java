@@ -2,23 +2,36 @@ package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.BookingShortForItem;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.EntityNotFoundException;
+import ru.practicum.shareit.exceptions.ItemCommentException;
 import ru.practicum.shareit.exceptions.ItemNotBelongsUserException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.RequestCommentDTO;
+import ru.practicum.shareit.item.dto.ResponseCommentDTO;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Comparator.comparing;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static ru.practicum.shareit.item.mapper.CommentMapper.modelToResponseDTO;
+import static ru.practicum.shareit.item.mapper.CommentMapper.modelToResponseDTOs;
 import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
 @Service("dbItemService")
@@ -27,14 +40,17 @@ public class DBItemService implements ItemService {
     ItemRepository itemRepository;
     UserRepository userRepository;
     BookingRepository bookingRepository;
+    CommentRepository commentRepository;
 
     @Autowired
     public DBItemService(ItemRepository itemRepository,
                          UserRepository userRepository,
-                         BookingRepository bookingRepository) {
+                         BookingRepository bookingRepository,
+                         CommentRepository commentRepository) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -43,7 +59,8 @@ public class DBItemService implements ItemService {
         Item itemOfInterest = itemRepository.findById(itemId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Предмет с id %d не найден", itemId)));
         ItemDto itemDto = toItemDto(itemOfInterest);
-
+        Collection<ResponseCommentDTO> comments = modelToResponseDTOs(commentRepository.findItemComments(itemOfInterest));
+        itemDto.setComments(comments);
         if (itemOfInterest.getOwner().getId().intValue() == userId.intValue()) {
             itemDto.setLastBooking(bookingRepository.findItemLastBookings(itemOfInterest).stream().findFirst().orElse(null));
             itemDto.setNextBooking(bookingRepository.findItemNextBookings(itemOfInterest).stream().findFirst().orElse(null));
@@ -60,6 +77,9 @@ public class DBItemService implements ItemService {
         Collection<Item> userItems = itemRepository.findAllByOwnerId(userId);
         Collection<BookingShortForItem> previousBookings = bookingRepository.findLastBookings(userItems);
         Collection<BookingShortForItem> followingBookings = bookingRepository.findNextBookings(userItems);
+        Map<Integer, List<Comment>> commentsMap = commentRepository.findItemComments(userItems)
+                .stream()
+                .collect(groupingBy(comment -> comment.getItem().getId()));
 
         return userItems.stream()
                 .sorted(comparing(Item::getId))
@@ -73,6 +93,9 @@ public class DBItemService implements ItemService {
                             .filter(booking -> item.getId().intValue() == booking.getItemId())
                             .findFirst()
                             .orElse(null));
+                    if (commentsMap.size() >  0) {
+                        itemDto.setComments(modelToResponseDTOs(commentsMap.get(item.getId())));
+                    }
                     return itemDto;
                 }).collect(toList());
 
@@ -114,4 +137,30 @@ public class DBItemService implements ItemService {
         }
         return toItemDtos(itemRepository.searchItems(searchText));
     }
+
+    @Override
+    public ResponseCommentDTO createComment(Integer userId, Integer itemId, RequestCommentDTO requestCommentDTO) {
+        User commentAuthor = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Пользователь с id %d не найден", userId)));
+        Item commentedItem = itemRepository.findById(itemId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Предмет с id %d не найден", itemId)));
+        Collection<Booking> authorBookings = bookingRepository.findAllByBookerId(userId);
+        boolean isCommentPossible = authorBookings.stream()
+                .anyMatch(booking -> booking.getItem().getId().intValue() == itemId
+                        && booking.getStatus() == Status.APPROVED
+                        && booking.getStart().isBefore(LocalDateTime.now()));
+        if (!isCommentPossible) {
+            throw new ItemCommentException("Комментируемая вещь ещё не бронировалась");
+        }
+        Comment newComment = Comment.builder()
+                .text(requestCommentDTO.getText())
+                .item(commentedItem)
+                .author(commentAuthor)
+                .created(LocalDateTime.now())
+                .build();
+
+        return modelToResponseDTO(commentRepository.save(newComment));
+    }
+
+
 }

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.EntityNotFoundException;
 import ru.practicum.shareit.exceptions.ItemNotBelongsUserException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.RequestCommentDTO;
+import ru.practicum.shareit.item.dto.ResponseCommentDTO;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -75,4 +77,10 @@ public class InMemoryItemService implements ItemService {
         }
         return itemStorage.searchItems(searchText).stream().map(ItemMapper::toItemDto).collect(toList());
     }
+
+    @Override
+    public ResponseCommentDTO createComment(Integer userId, Integer itemId, RequestCommentDTO requestCommentDTO) {
+        return null;
+    }
+
 }

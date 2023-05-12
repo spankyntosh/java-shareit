@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.model.Booking;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * TODO Sprint add-controllers.
@@ -25,4 +27,5 @@ public class User {
     private String name;
     @Column(name = "email")
     private String email;
+
 }
