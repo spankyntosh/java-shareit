@@ -91,7 +91,7 @@ public class DBBookingService implements BookingService {
         }
         Booking requestedBooking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Бронирование с id %d не найдено", bookingId)));
-        boolean isUserOwner = requestedBooking.getItem().getOwner().equals(userId);
+        boolean isUserOwner = requestedBooking.getItem().getOwner().getId().equals(userId);
         boolean isUserBooker = requestedBooking.getBooker().getId().intValue() == userId.intValue();
         if (!(isUserOwner | isUserBooker)) {
             throw new BookingIllegalAccessException("Данное бронирование недоступно");
