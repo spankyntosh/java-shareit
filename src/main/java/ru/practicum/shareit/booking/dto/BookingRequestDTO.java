@@ -20,4 +20,11 @@ public class BookingRequestDTO {
     @DateTimeFormat(pattern = "YYYY-MM-DDTHH:mm:ss")
     @NotNull(message = "необходимо указать время окончания бронирования")
     private LocalDateTime end;
+
+    @Override
+    public String toString() {
+        return "BookingRequest{" +
+                "itemId=" + itemId +
+                '}';
+    }
 }

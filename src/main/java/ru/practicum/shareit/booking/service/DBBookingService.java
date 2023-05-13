@@ -47,7 +47,7 @@ public class DBBookingService implements BookingService {
         if (!bookingItem.getAvailable()) {
             throw new ItemNotAvailableException(String.format("Предмет с id %d не доступен для бронирования", requestDTO.getItemId()));
         }
-        if (bookingItem.getOwner().getId().intValue() == userId.intValue()) {
+        if (bookingItem.getOwner().getId().equals(userId)) {
             throw new UserBookingHisOwnItemException("Попытка забронировать свой предмет");
         }
         if (requestDTO.getEnd().isBefore(requestDTO.getStart()) || requestDTO.getEnd().isEqual(requestDTO.getStart())) {
@@ -70,7 +70,7 @@ public class DBBookingService implements BookingService {
         }
         Booking approvingBooking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Бронирование с id %d не найдено", bookingId)));
-        if (!(approvingBooking.getItem().getOwner().getId().intValue() == userId)) {
+        if (!(approvingBooking.getItem().getOwner().getId().equals(userId))) {
             throw new NotOwnerApproveException("подтверждение бронирования должно производиться владельцем");
         }
         if (approvingBooking.getStatus() != Status.WAITING) {
@@ -91,7 +91,7 @@ public class DBBookingService implements BookingService {
         }
         Booking requestedBooking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Бронирование с id %d не найдено", bookingId)));
-        boolean isUserOwner = requestedBooking.getItem().getOwner().getId().intValue() == userId.intValue();
+        boolean isUserOwner = requestedBooking.getItem().getOwner().equals(userId);
         boolean isUserBooker = requestedBooking.getBooker().getId().intValue() == userId.intValue();
         if (!(isUserOwner | isUserBooker)) {
             throw new BookingIllegalAccessException("Данное бронирование недоступно");
@@ -152,7 +152,7 @@ public class DBBookingService implements BookingService {
             throw new WrongStatusException("Unknown state: UNSUPPORTED_STATUS");
         }
         LocalDateTime now = LocalDateTime.now();
-        Collection<BookingResponseDTO> userItems = bookingRepository.findUserItemBookings(userId);
+        Collection<BookingResponseDTO> userItems = bookingRepository.findBookingsByOwner(userId);
         switch (bookingState) {
             case CURRENT:
                 return userItems

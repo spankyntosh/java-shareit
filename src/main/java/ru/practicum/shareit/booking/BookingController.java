@@ -28,7 +28,7 @@ public class BookingController {
     @PostMapping
     public BookingResponseDTO createBooking(@RequestHeader("X-Sharer-User-Id") Integer userId,
                                             @Valid @RequestBody BookingRequestDTO requestDTO) {
-        log.info("Пришёл запрос на создание бронирования");
+        log.info(String.format("Пришёл запрос на создание бронирования от пользователя %d", userId));
         return bookingService.createBooking(userId, requestDTO);
     }
 
@@ -36,28 +36,28 @@ public class BookingController {
     public BookingResponseDTO approveBooking(@RequestHeader("X-Sharer-User-Id") Integer userId,
                                      @PathVariable Integer bookingId,
                                      @RequestParam(name = "approved") boolean isApproved) {
-        log.info("Пришёл запрос на подтверждение бронирования");
+        log.info(String.format("Пришёл запрос на подтверждение бронирования %d от пользователя %d", bookingId, userId));
         return bookingService.approveBooking(userId, bookingId, isApproved);
     }
 
     @GetMapping("/{bookingId}")
     public BookingResponseDTO getBooking(@RequestHeader("X-Sharer-User-Id") Integer userId,
                                  @PathVariable Integer bookingId) {
-        log.info("Пришёл запрос на получение бронирования");
+        log.info(String.format("Пришёл запрос на получение бронирования %d от пользователя %d", bookingId, userId));
         return bookingService.getBookingById(userId, bookingId);
     }
 
     @GetMapping
     public Collection<BookingResponseDTO> getUserBookings(@RequestHeader("X-Sharer-User-Id") Integer userId,
                                                   @RequestParam(name = "state", defaultValue = "ALL") String state) {
-        log.info("Пришёл запрос на получение всех бронирований пользователя");
+        log.info(String.format("Пришёл запрос на получение всех бронирований пользователя %d", userId));
         return bookingService.getUserBookings(userId, state);
     }
 
     @GetMapping("/owner")
     public Collection<BookingResponseDTO> getUserItemsBookings(@RequestHeader("X-Sharer-User-Id") Integer userId,
                                                        @RequestParam(name = "state", defaultValue = "ALL") String state) {
-        log.info("Пришёл запрос на получение бронирований вещей пользователя");
+        log.info(String.format("Пришёл запрос на получение бронирований вещей пользователя %d", userId));
         return bookingService.getUserItemsBookings(userId, state);
 
     }
