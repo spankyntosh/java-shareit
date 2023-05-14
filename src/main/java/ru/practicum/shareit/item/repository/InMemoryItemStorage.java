@@ -10,7 +10,7 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 @Repository
-public class InMemoryItemRepository implements ItemRepository {
+public class InMemoryItemStorage implements ItemStorage {
 
     private static int itemIdCounter = 1;
     private final Map<Integer, List<Item>> items = new HashMap<>();

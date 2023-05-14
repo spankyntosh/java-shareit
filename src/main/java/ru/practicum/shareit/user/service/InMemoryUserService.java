@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.EntityNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.repository.UserStorage;
 
 import java.util.Collection;
 
@@ -15,11 +15,11 @@ import static ru.practicum.shareit.user.mapper.UserMapper.*;
 @Service
 public class InMemoryUserService implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserStorage userRepository;
 
     @Autowired
-    public InMemoryUserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public InMemoryUserService(UserStorage userStorage) {
+        this.userRepository = userStorage;
     }
 
     @Override

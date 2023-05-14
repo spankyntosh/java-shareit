@@ -2,8 +2,11 @@ package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.RequestCommentDTO;
+import ru.practicum.shareit.item.dto.ResponseCommentDTO;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -18,25 +21,23 @@ import java.util.Collection;
 @Slf4j
 public class ItemController {
 
-    private static int createRequestCounter = 0;
+    @Qualifier("dbItemService")
     private final ItemService itemService;
 
     @Autowired
-    public ItemController(ItemService itemService) {
+    public ItemController(@Qualifier("dbItemService") ItemService itemService) {
         this.itemService = itemService;
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@PathVariable Integer itemId) {
+    public ItemDto getItem(@RequestHeader("X-Sharer-User-Id") Integer id, @PathVariable Integer itemId) {
         log.info(String.format("Пришёл запрос на получение вещи с id %d", itemId));
-        return itemService.getItem(itemId);
+        return itemService.getItem(id, itemId);
     }
 
     @PostMapping
     ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Integer id, @Valid @RequestBody ItemDto itemDto) {
         log.info(String.format("Пришёл запрос на создание вещи у пользователя с id %d", id));
-        System.out.println("Количество общее количество запросов по созданию предмета: " + createRequestCounter);
-        createRequestCounter++;
         return itemService.createItem(itemDto, id);
     }
 
@@ -58,6 +59,14 @@ public class ItemController {
     Collection<ItemDto> searchItems(@RequestParam(required = true) String text) {
         log.info(String.format("Пришёл запрос по поиску вещи с описанием %s", text));
         return itemService.searchItems(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    ResponseCommentDTO createComment(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                                     @Valid @RequestBody RequestCommentDTO commentDTO,
+                                     @PathVariable Integer itemId) {
+        log.info("Пришёл запрос на добавление комментария");
+        return itemService.createComment(userId, itemId, commentDTO);
     }
 
 }
