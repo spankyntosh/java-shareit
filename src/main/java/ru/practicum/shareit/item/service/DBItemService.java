@@ -18,7 +18,6 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -100,7 +99,7 @@ public class DBItemService implements ItemService {
                             .filter(booking -> item.getId().intValue() == booking.getItemId())
                             .findFirst()
                             .orElse(null));
-                    if (commentsMap.size() >  0) {
+                    if (commentsMap.size() > 0) {
                         itemDto.setComments(modelToResponseDTOs(commentsMap.get(item.getId())));
                     }
                     return itemDto;

@@ -102,7 +102,7 @@ public class DBBookingService implements BookingService {
 
     @Override
     public Collection<BookingResponseDTO> getUserBookings(Integer userId, String state, Integer from, Integer size) {
-        if (from < 0 || size <=0) {
+        if (from < 0 || size <= 0) {
             throw new ValidationException("Передан ошибочный параметр");
         }
         if (!userRepository.existsById(userId)) {
@@ -149,7 +149,7 @@ public class DBBookingService implements BookingService {
 
     @Override
     public Collection<BookingResponseDTO> getUserItemsBookings(Integer userId, String state, Integer from, Integer size) {
-        if (from < 0 || size <=0) {
+        if (from < 0 || size <= 0) {
             throw new ValidationException("Передан ошибочный параметр");
         }
         if (!userRepository.existsById(userId)) {
