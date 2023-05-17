@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.BookingShortForItem;
@@ -17,6 +18,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -37,20 +40,23 @@ import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 @Service("dbItemService")
 public class DBItemService implements ItemService {
 
-    ItemRepository itemRepository;
-    UserRepository userRepository;
-    BookingRepository bookingRepository;
-    CommentRepository commentRepository;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
+    private final ItemRequestRepository requestRepository;
 
     @Autowired
     public DBItemService(ItemRepository itemRepository,
                          UserRepository userRepository,
                          BookingRepository bookingRepository,
-                         CommentRepository commentRepository) {
+                         CommentRepository commentRepository,
+                         ItemRequestRepository requestRepository) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
+        this.requestRepository = requestRepository;
     }
 
     @Override
@@ -70,11 +76,12 @@ public class DBItemService implements ItemService {
     }
 
     @Override
-    public Collection<ItemDto> getUserItems(Integer userId) {
+    public Collection<ItemDto> getUserItems(Integer userId, Integer from, Integer size) {
         if (!userRepository.existsById(userId)) {
             throw new EntityNotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
-        Collection<Item> userItems = itemRepository.findAllByOwnerId(userId);
+        PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+        Collection<Item> userItems = itemRepository.findAllByOwnerId(userId, pageRequest);
         Collection<BookingShortForItem> previousBookings = bookingRepository.findLastBookings(userItems);
         Collection<BookingShortForItem> followingBookings = bookingRepository.findNextBookings(userItems);
         Map<Integer, List<Comment>> commentsMap = commentRepository.findItemComments(userItems)
@@ -105,7 +112,12 @@ public class DBItemService implements ItemService {
     public ItemDto createItem(ItemDto itemDto, Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Пользователь с id %d не найден", userId)));
-        return toItemDto(itemRepository.save(toModel(itemDto, user)));
+        Item savedItem = toModel(itemDto, user);
+        if (nonNull(itemDto.getRequestId())) {
+            savedItem.setRequest(requestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new EntityNotFoundException(String.format("Запрос с id %d не найден", userId))));
+        }
+        return toItemDto(itemRepository.save(savedItem));
     }
 
     @Override
@@ -131,11 +143,12 @@ public class DBItemService implements ItemService {
     }
 
     @Override
-    public Collection<ItemDto> searchItems(String searchText) {
+    public Collection<ItemDto> searchItems(String searchText, Integer from, Integer size) {
         if (searchText.isBlank()) {
             return new ArrayList<ItemDto>();
         }
-        return toItemDtos(itemRepository.searchItems(searchText));
+        PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+        return toItemDtos(itemRepository.searchItems(searchText, pageRequest));
     }
 
     @Override

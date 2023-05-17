@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingResponseDTO;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 
 /**
@@ -34,31 +35,35 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public BookingResponseDTO approveBooking(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                     @PathVariable Integer bookingId,
-                                     @RequestParam(name = "approved") boolean isApproved) {
+                                             @PathVariable Integer bookingId,
+                                             @RequestParam(name = "approved") boolean isApproved) {
         log.info(String.format("Пришёл запрос на подтверждение бронирования %d от пользователя %d", bookingId, userId));
         return bookingService.approveBooking(userId, bookingId, isApproved);
     }
 
     @GetMapping("/{bookingId}")
     public BookingResponseDTO getBooking(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                 @PathVariable Integer bookingId) {
+                                         @PathVariable Integer bookingId) {
         log.info(String.format("Пришёл запрос на получение бронирования %d от пользователя %d", bookingId, userId));
         return bookingService.getBookingById(userId, bookingId);
     }
 
     @GetMapping
     public Collection<BookingResponseDTO> getUserBookings(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                                  @RequestParam(name = "state", defaultValue = "ALL") String state) {
+                                                          @RequestParam(name = "state", defaultValue = "ALL") String state,
+                                                          @RequestParam(required = false, defaultValue = "0") int from,
+                                                          @RequestParam(required = false, defaultValue = "10") int size) {
         log.info(String.format("Пришёл запрос на получение всех бронирований пользователя %d", userId));
-        return bookingService.getUserBookings(userId, state);
+        return bookingService.getUserBookings(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     public Collection<BookingResponseDTO> getUserItemsBookings(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                                                       @RequestParam(name = "state", defaultValue = "ALL") String state) {
+                                                               @RequestParam(name = "state", defaultValue = "ALL") String state,
+                                                               @RequestParam(required = false, defaultValue = "0") int from,
+                                                               @RequestParam(required = false, defaultValue = "10") int size) {
         log.info(String.format("Пришёл запрос на получение бронирований вещей пользователя %d", userId));
-        return bookingService.getUserItemsBookings(userId, state);
+        return bookingService.getUserItemsBookings(userId, state, from, size);
 
     }
 

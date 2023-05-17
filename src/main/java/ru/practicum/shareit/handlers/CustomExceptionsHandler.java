@@ -108,4 +108,11 @@ public class CustomExceptionsHandler extends ResponseEntityExceptionHandler {
         log.warn(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationException(ValidationException e) {
+        log.warn(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
 }

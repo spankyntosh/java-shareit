@@ -11,6 +11,7 @@ import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 
 /**
@@ -50,15 +51,19 @@ public class ItemController {
     }
 
     @GetMapping
-    Collection<ItemDto> getUserItems(@RequestHeader("X-Sharer-User-Id") Integer id) {
+    Collection<ItemDto> getUserItems(@RequestHeader("X-Sharer-User-Id") Integer id,
+                                     @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer from,
+                                     @RequestParam(required = false, defaultValue = "10") @PositiveOrZero Integer size) {
         log.info(String.format("Пришёл запрос на получение вещей у пользователя с id %d", id));
-        return itemService.getUserItems(id);
+        return itemService.getUserItems(id, from, size);
     }
 
     @GetMapping("/search")
-    Collection<ItemDto> searchItems(@RequestParam(required = true) String text) {
+    Collection<ItemDto> searchItems(@RequestParam(required = true) String text,
+                                    @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer from,
+                                    @RequestParam(required = false, defaultValue = "10") @PositiveOrZero Integer size) {
         log.info(String.format("Пришёл запрос по поиску вещи с описанием %s", text));
-        return itemService.searchItems(text);
+        return itemService.searchItems(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")

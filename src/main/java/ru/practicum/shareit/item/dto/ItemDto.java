@@ -30,4 +30,5 @@ public class ItemDto {
     private BookingShortForItem lastBooking;
     private BookingShortForItem nextBooking;
     private Collection<ResponseCommentDTO> comments;
+    private Integer requestId;
 }
