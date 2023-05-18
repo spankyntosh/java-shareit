@@ -1,6 +1,9 @@
 package ru.practicum.shareit.booking.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Future;
@@ -9,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
+@Builder(toBuilder = true)
 public class BookingRequestDTO {
     @NotNull
     private int itemId;

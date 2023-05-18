@@ -36,7 +36,7 @@ import static ru.practicum.shareit.item.mapper.CommentMapper.modelToResponseDTO;
 import static ru.practicum.shareit.item.mapper.CommentMapper.modelToResponseDTOs;
 import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
-@Service("dbItemService")
+@Service
 public class DBItemService implements ItemService {
 
     private final ItemRepository itemRepository;

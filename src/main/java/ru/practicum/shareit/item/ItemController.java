@@ -22,11 +22,10 @@ import java.util.Collection;
 @Slf4j
 public class ItemController {
 
-    @Qualifier("dbItemService")
     private final ItemService itemService;
 
     @Autowired
-    public ItemController(@Qualifier("dbItemService") ItemService itemService) {
+    public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
 

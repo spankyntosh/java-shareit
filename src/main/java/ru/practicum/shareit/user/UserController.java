@@ -18,11 +18,10 @@ import java.util.Collection;
 @Slf4j
 public class UserController {
 
-    @Qualifier("dbUserService")
     private final UserService userService;
 
     @Autowired
-    public UserController(@Qualifier("dbUserService") UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 

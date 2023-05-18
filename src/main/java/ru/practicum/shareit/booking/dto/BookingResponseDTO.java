@@ -1,8 +1,7 @@
 package ru.practicum.shareit.booking.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.item.dto.ItemShort;
 import ru.practicum.shareit.user.dto.UserShort;
@@ -16,7 +15,7 @@ public class BookingResponseDTO {
     private final int id;
     private final LocalDateTime start;
     private final LocalDateTime end;
-    private final Status status;
+    private Status status;
     private final UserShort booker;
     private final ItemShort item;
 
