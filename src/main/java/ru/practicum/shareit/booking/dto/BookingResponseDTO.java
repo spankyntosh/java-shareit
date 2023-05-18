@@ -1,7 +1,8 @@
 package ru.practicum.shareit.booking.dto;
 
-import lombok.*;
-import lombok.extern.slf4j.Slf4j;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.item.dto.ItemShort;
 import ru.practicum.shareit.user.dto.UserShort;
