@@ -19,13 +19,13 @@ import static org.mockito.Mockito.*;
 
 public class UserServiceTests {
 
-    private final Integer USER_ID = 1;
-    private final Integer ANOTHER_USER_ID = 3;
-    private final String USER_NAME = "user";
+    private static final Integer USER_ID = 1;
+    private static final Integer ANOTHER_USER_ID = 3;
+    private static final String USER_NAME = "user";
 
-    private final String ANOTHER_USER_NAME = "another user";
-    private final String USER_EMAIL = "user@mail.com";
-    private final String ANOTHER_USER_EMAIL = "anotherUser@mail.com";
+    private static final String ANOTHER_USER_NAME = "another user";
+    private static final String USER_EMAIL = "user@mail.com";
+    private static final String ANOTHER_USER_EMAIL = "anotherUser@mail.com";
     private UserService userService;
     private UserRepository userRepository;
     private User user;
