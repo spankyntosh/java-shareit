@@ -8,8 +8,10 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingRequestDTO;
 import ru.practicum.shareit.booking.dto.BookingResponseDTO;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemShort;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserShort;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @JsonTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -36,6 +39,7 @@ public class BookingDtoJsonTest {
     private BookingRequestDTO requestDTO;
     private BookingResponseDTO responseDTO;
     private BookingDto bookingDto;
+    private Booking booking;
     private User booker;
     private User owner;
     private Item item;
@@ -83,6 +87,15 @@ public class BookingDtoJsonTest {
                 .booker(booker)
                 .item(item)
                 .build();
+        booking = Booking.builder()
+                .id(1)
+                .start(start)
+                .end(end)
+                .status(Status.APPROVED)
+                .booker(booker)
+                .item(item)
+                .build();
+
     }
 
     @Test
@@ -106,7 +119,7 @@ public class BookingDtoJsonTest {
     }
 
     @Test
-    void bookingTest() throws IOException {
+    public void bookingTest() throws IOException {
         JsonContent<BookingDto> result = json3.write(bookingDto);
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathValue("$.start").isNotNull();
@@ -124,5 +137,20 @@ public class BookingDtoJsonTest {
         assertThat(result).extractingJsonPathStringValue("$.item.owner.email").isEqualTo("owner@mail.com");
     }
 
+    @Test
+    public void requestDtoToModel() {
+        Booking booking = BookingMapper.requestDTOToModel(requestDTO);
+        assertEquals(requestDTO.getStart(), booking.getStart());
+        assertEquals(requestDTO.getEnd(), booking.getEnd());
+    }
+
+    @Test
+    public void modelToResponseDTO() {
+        BookingResponseDTO responseDTO1 = BookingMapper.modelToResponseDTO(booking);
+        assertEquals(booking.getId(), responseDTO1.getId());
+        assertEquals(booking.getStart(), responseDTO1.getStart());
+        assertEquals(booking.getEnd(), responseDTO1.getEnd());
+        assertEquals(booking.getStatus(), responseDTO1.getStatus());
+    }
 
 }
