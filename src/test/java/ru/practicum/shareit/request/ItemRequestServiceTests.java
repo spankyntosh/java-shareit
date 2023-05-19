@@ -101,7 +101,7 @@ public class ItemRequestServiceTests {
     }
 
     @Test
-    public void GetRequestByIdRequestNotFound() {
+    public void getRequestByIdRequestNotFound() {
         when(userRepository.existsById(anyInt()))
                 .thenReturn(true);
         when(requestRepository.findById(anyInt()))
