@@ -3,12 +3,15 @@ package ru.practicum.shareit.item;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
+import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.EntityNotFoundException;
+import ru.practicum.shareit.exceptions.ItemCommentException;
 import ru.practicum.shareit.exceptions.ItemNotBelongsUserException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.RequestCommentDTO;
+import ru.practicum.shareit.item.dto.ResponseCommentDTO;
 import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -21,7 +24,6 @@ import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -57,6 +59,12 @@ public class ItemServiceTests {
     private Item itemWithRequest;
     private ItemRequest itemRequest;
     private UpdateItemDto updateItemDto;
+    private Booking booking;
+    private static final Integer BOOKING_ID = 4;
+    private static final LocalDateTime BOOKING_START = LocalDateTime.now().minusDays(1L);
+    private static final LocalDateTime BOOKING_END = LocalDateTime.now().plusDays(1L);
+    private Comment comment;
+    private static final LocalDateTime COMMENT_CREATED = LocalDateTime.now();
 
     @BeforeEach
     public void beforeEach() {
@@ -102,6 +110,21 @@ public class ItemServiceTests {
                 .name("new name")
                 .description("new description")
                 .available(true)
+                .build();
+        booking = Booking.builder()
+                .id(BOOKING_ID)
+                .start(BOOKING_START)
+                .end(BOOKING_END)
+                .booker(user)
+                .item(item)
+                .status(Status.APPROVED)
+                .build();
+        comment = Comment.builder()
+                .id(6)
+                .text("good")
+                .author(user)
+                .item(item)
+                .created(COMMENT_CREATED)
                 .build();
     }
 
@@ -232,10 +255,29 @@ public class ItemServiceTests {
                 .thenReturn(Optional.ofNullable(user));
         when(itemRepository.findById(anyInt()))
                 .thenReturn(Optional.ofNullable(item));
-        when(bookingRepository.findAllByBookerId(anyInt()))
-                .thenReturn(List.of(new Booking()));
+        when(bookingRepository.findAllByBookerId(USER_ID))
+                .thenReturn(List.of(booking));
         when(commentRepository.save(any(Comment.class)))
-                .thenReturn(new Comment());
+                .thenReturn(comment);
+        ResponseCommentDTO result = itemService.createComment(USER_ID, ITEM_ID, new RequestCommentDTO("good"));
+        assertAll(
+                () -> assertEquals(comment.getId(), result.getId()),
+                () -> assertEquals(comment.getText(), result.getText()),
+                () -> assertEquals(comment.getAuthor().getName(), result.getAuthorName())
+        );
+        verify(commentRepository, times(1)).save(any(Comment.class));
+    }
 
+    @Test
+    public void createCommentItemCommentException() {
+        when(userRepository.findById(anyInt()))
+                .thenReturn(Optional.ofNullable(user));
+        when(itemRepository.findById(anyInt()))
+                .thenReturn(Optional.ofNullable(item));
+        when(bookingRepository.findAllByBookerId(USER_ID))
+                .thenReturn(List.of(booking));
+        when(commentRepository.save(any(Comment.class)))
+                .thenReturn(comment);
+        assertThrows(ItemCommentException.class, () -> itemService.createComment(USER_ID, 12, new RequestCommentDTO("good")));
     }
 }
