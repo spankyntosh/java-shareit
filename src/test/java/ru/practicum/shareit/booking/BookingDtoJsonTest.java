@@ -39,8 +39,8 @@ public class BookingDtoJsonTest {
     private User booker;
     private User owner;
     private Item item;
-    private final static LocalDateTime START = LocalDateTime.now().plusMinutes(1L);
-    private final static LocalDateTime END = LocalDateTime.now().plusDays(1L);
+    private final LocalDateTime START = LocalDateTime.now().plusMinutes(1L);
+    private final LocalDateTime END = LocalDateTime.now().plusDays(1L);
 
     @BeforeAll
     public void beforeALl() {
