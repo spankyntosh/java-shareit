@@ -39,8 +39,8 @@ public class BookingDtoJsonTest {
     private User booker;
     private User owner;
     private Item item;
-    private final LocalDateTime START = LocalDateTime.now().plusMinutes(1L);
-    private final LocalDateTime END = LocalDateTime.now().plusDays(1L);
+    private final LocalDateTime start = LocalDateTime.now().plusMinutes(1L);
+    private final LocalDateTime end = LocalDateTime.now().plusDays(1L);
 
     @BeforeAll
     public void beforeALl() {
@@ -63,22 +63,22 @@ public class BookingDtoJsonTest {
                 .build();
         requestDTO = BookingRequestDTO.builder()
                 .itemId(1)
-                .start(START)
-                .end(END)
+                .start(start)
+                .end(end)
                 .build();
 
         responseDTO = BookingResponseDTO.builder()
                 .id(1)
-                .start(START)
-                .end(END)
+                .start(start)
+                .end(end)
                 .status(Status.APPROVED)
                 .booker(new UserShort(1))
                 .item(new ItemShort(1, "name"))
                 .build();
         bookingDto = BookingDto.builder()
                 .id(1)
-                .start(START)
-                .end(END)
+                .start(start)
+                .end(end)
                 .status(Status.APPROVED)
                 .booker(booker)
                 .item(item)
