@@ -22,7 +22,7 @@ public class CommentRepositoryTests {
     ItemRepository itemRepository;
 
     @Test
-    public void test1() {
+    public void findItemCommentsTest() {
         Collection<Comment> result = commentRepository.findItemComments(itemRepository.findAll());
         Assertions.assertTrue(result.size() > 0);
     }
