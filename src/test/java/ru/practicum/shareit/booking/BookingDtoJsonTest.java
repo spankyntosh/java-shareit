@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingRequestDTO;
 import ru.practicum.shareit.booking.dto.BookingResponseDTO;
@@ -33,12 +32,8 @@ public class BookingDtoJsonTest {
     @Autowired
     private JacksonTester<BookingResponseDTO> json2;
 
-    @Autowired
-    private JacksonTester<BookingDto> json3;
-
     private BookingRequestDTO requestDTO;
     private BookingResponseDTO responseDTO;
-    private BookingDto bookingDto;
     private Booking booking;
     private User booker;
     private User owner;
@@ -79,14 +74,6 @@ public class BookingDtoJsonTest {
                 .booker(new UserShort(1))
                 .item(new ItemShort(1, "name"))
                 .build();
-        bookingDto = BookingDto.builder()
-                .id(1)
-                .start(start)
-                .end(end)
-                .status(Status.APPROVED)
-                .booker(booker)
-                .item(item)
-                .build();
         booking = Booking.builder()
                 .id(1)
                 .start(start)
@@ -116,25 +103,6 @@ public class BookingDtoJsonTest {
         assertThat(result).extractingJsonPathNumberValue("$.booker.id").isEqualTo(1);
         assertThat(result).extractingJsonPathNumberValue("$.item.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.item.name").isEqualTo("name");
-    }
-
-    @Test
-    public void bookingTest() throws IOException {
-        JsonContent<BookingDto> result = json3.write(bookingDto);
-        assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
-        assertThat(result).extractingJsonPathValue("$.start").isNotNull();
-        assertThat(result).extractingJsonPathValue("$.end").isNotNull();
-        assertThat(result).extractingJsonPathStringValue("$.status").isEqualTo("APPROVED");
-        assertThat(result).extractingJsonPathNumberValue("$.booker.id").isEqualTo(1);
-        assertThat(result).extractingJsonPathStringValue("$.booker.name").isEqualTo("booker");
-        assertThat(result).extractingJsonPathStringValue("$.booker.email").isEqualTo("booker@mail.com");
-        assertThat(result).extractingJsonPathNumberValue("$.item.id").isEqualTo(3);
-        assertThat(result).extractingJsonPathStringValue("$.item.name").isEqualTo("item");
-        assertThat(result).extractingJsonPathStringValue("$.item.description").isEqualTo("description");
-        assertThat(result).extractingJsonPathBooleanValue("$.item.available").isEqualTo(true);
-        assertThat(result).extractingJsonPathNumberValue("$.item.owner.id").isEqualTo(2);
-        assertThat(result).extractingJsonPathStringValue("$.item.owner.name").isEqualTo("owner");
-        assertThat(result).extractingJsonPathStringValue("$.item.owner.email").isEqualTo("owner@mail.com");
     }
 
     @Test
