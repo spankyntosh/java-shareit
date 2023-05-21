@@ -19,9 +19,16 @@ public class ItemRepositoryTests {
     ItemRepository itemRepository;
 
     @Test
-    public void findAllByOwner() {
+    public void findAllByOwnerTest() {
         PageRequest page = PageRequest.of(0, 10);
         Collection<Item> result = itemRepository.findAllByOwnerId(1, page);
+        Assertions.assertTrue(result.size() > 0);
+    }
+
+    @Test
+    public void searchByTextTest() {
+        PageRequest page = PageRequest.of(0, 10);
+        Collection<Item> result = itemRepository.searchItems("description", page);
         Assertions.assertTrue(result.size() > 0);
     }
 }
