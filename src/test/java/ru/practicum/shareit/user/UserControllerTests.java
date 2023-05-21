@@ -49,9 +49,9 @@ public class UserControllerTests {
                 .thenReturn(responseBody);
 
         mvc.perform(post("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(requestBody)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(requestBody)))
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("user 1")))
@@ -126,8 +126,19 @@ public class UserControllerTests {
                 .thenReturn(List.of(responseBody));
 
         mvc.perform(get("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(200));
+    }
+
+    @Test
+    public void deleteUser_ThenRequest_WhenResponseOk() throws Exception {
+        doAnswer(answer -> {
+            return null;
+        }).when(userService).deleteUser(anyInt());
+
+        mvc.perform(delete("/users/{id}", 1))
+                .andExpect(status().isOk());
+
     }
 }
