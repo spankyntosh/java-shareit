@@ -22,4 +22,10 @@ public class UserRepositoryTests {
         Collection<User> result = userRepository.findAll();
         Assertions.assertEquals(3, result.size());
     }
+
+    @Test
+    public void existByEmailTest() {
+        boolean result = userRepository.existsByEmail("user_1@mail.com");
+        Assertions.assertTrue(result);
+    }
 }

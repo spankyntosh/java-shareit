@@ -19,9 +19,15 @@ public class ItemRequestRepositoryTests {
     ItemRequestRepository requestRepository;
 
     @Test
-    public void test1() {
+    public void findAllExceptRequesterTest() {
         PageRequest page = PageRequest.of(0, 10);
         Collection<ItemRequest> result = requestRepository.findAllExceptRequester(1, page);
         Assertions.assertEquals(1, result.size());
+    }
+
+    @Test
+    public void findByRequesterIdTest() {
+        Collection<ItemRequest> result = requestRepository.findByRequesterId(1);
+        Assertions.assertTrue(result.size() > 0);
     }
 }
