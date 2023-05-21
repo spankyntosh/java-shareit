@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Sql(value = "/testSchema.sql")
 @SpringBootTest
-public class ItemRequestIntegrationTests {
+public class ItemRequestServiceIntegrationTests {
 
     private final ItemRequestService requestService;
 

@@ -74,4 +74,10 @@ public class BookingRepositoryTests {
         Collection<BookingShortForItem> result = bookingRepository.findItemLastBookings(itemRepository.findById(1).get());
         Assertions.assertTrue(result.size() > 0);
     }
+
+    @Test
+    public void updateBookingStatusTest() {
+        bookingRepository.updateBookingStatus(1, Status.REJECTED);
+        Assertions.assertEquals(Status.REJECTED, bookingRepository.findById(1).get().getStatus());
+    }
 }
