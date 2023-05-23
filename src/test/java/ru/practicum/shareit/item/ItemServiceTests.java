@@ -17,7 +17,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.item.service.DBItemService;
+import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
@@ -73,7 +73,7 @@ public class ItemServiceTests {
         bookingRepository = mock(BookingRepository.class);
         commentRepository = mock(CommentRepository.class);
         requestRepository = mock(ItemRequestRepository.class);
-        itemService = new DBItemService(itemRepository, userRepository, bookingRepository, commentRepository, requestRepository);
+        itemService = new ItemServiceImpl(itemRepository, userRepository, bookingRepository, commentRepository, requestRepository);
         createItemDTO = ItemDto.builder()
                 .id(ITEM_ID)
                 .name(ITEM_NAME)

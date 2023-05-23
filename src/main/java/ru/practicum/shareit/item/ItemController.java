@@ -10,6 +10,7 @@ import ru.practicum.shareit.item.dto.UpdateItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 
@@ -30,13 +31,13 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemDto getItem(@RequestHeader("X-Sharer-User-Id") Integer id, @PathVariable Integer itemId) {
-        log.info(String.format("Пришёл запрос на получение вещи с id %d", itemId));
+        log.info("Пришёл запрос на получение вещи с id {}", itemId);
         return itemService.getItem(id, itemId);
     }
 
     @PostMapping
     ItemDto createItem(@RequestHeader("X-Sharer-User-Id") Integer id, @Valid @RequestBody ItemDto itemDto) {
-        log.info(String.format("Пришёл запрос на создание вещи у пользователя с id %d", id));
+        log.info("Пришёл запрос на создание вещи у пользователя с id {}", itemDto);
         return itemService.createItem(itemDto, id);
     }
 
@@ -44,15 +45,15 @@ public class ItemController {
     ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Integer id,
                        @RequestBody UpdateItemDto updateItemDto,
                        @PathVariable Integer itemId) {
-        log.info(String.format("Пришёл запрос на обновление вещи с id %d", itemId));
+        log.info("Пришёл запрос на обновление вещи с id {}", itemId);
         return itemService.updateItem(updateItemDto, id, itemId);
     }
 
     @GetMapping
     Collection<ItemDto> getUserItems(@RequestHeader("X-Sharer-User-Id") Integer id,
                                      @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer from,
-                                     @RequestParam(required = false, defaultValue = "10") @PositiveOrZero Integer size) {
-        log.info(String.format("Пришёл запрос на получение вещей у пользователя с id %d", id));
+                                     @RequestParam(required = false, defaultValue = "10") @Positive Integer size) {
+        log.info("Пришёл запрос на получение вещей у пользователя с id {}", id);
         return itemService.getUserItems(id, from, size);
     }
 
@@ -60,7 +61,7 @@ public class ItemController {
     Collection<ItemDto> searchItems(@RequestParam(required = true) String text,
                                     @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer from,
                                     @RequestParam(required = false, defaultValue = "10") @PositiveOrZero Integer size) {
-        log.info(String.format("Пришёл запрос по поиску вещи с описанием %s", text));
+        log.info("Пришёл запрос по поиску вещи с описанием {}", text);
         return itemService.searchItems(text, from, size);
     }
 
@@ -68,7 +69,7 @@ public class ItemController {
     ResponseCommentDTO createComment(@RequestHeader("X-Sharer-User-Id") Integer userId,
                                      @Valid @RequestBody RequestCommentDTO commentDTO,
                                      @PathVariable Integer itemId) {
-        log.info("Пришёл запрос на добавление комментария");
+        log.info("Пришёл запрос на добавление комментария от пользователя {}", userId);
         return itemService.createComment(userId, itemId, commentDTO);
     }
 

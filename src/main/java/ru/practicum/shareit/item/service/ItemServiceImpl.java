@@ -37,7 +37,7 @@ import static ru.practicum.shareit.item.mapper.CommentMapper.modelToResponseDTOs
 import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
 @Service
-public class DBItemService implements ItemService {
+public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -46,11 +46,11 @@ public class DBItemService implements ItemService {
     private final ItemRequestRepository requestRepository;
 
     @Autowired
-    public DBItemService(ItemRepository itemRepository,
-                         UserRepository userRepository,
-                         BookingRepository bookingRepository,
-                         CommentRepository commentRepository,
-                         ItemRequestRepository requestRepository) {
+    public ItemServiceImpl(ItemRepository itemRepository,
+                           UserRepository userRepository,
+                           BookingRepository bookingRepository,
+                           CommentRepository commentRepository,
+                           ItemRequestRepository requestRepository) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
