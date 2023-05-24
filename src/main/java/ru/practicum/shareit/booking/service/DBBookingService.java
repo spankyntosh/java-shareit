@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.State;
 import ru.practicum.shareit.booking.Status;
@@ -100,7 +101,10 @@ public class DBBookingService implements BookingService {
     }
 
     @Override
-    public Collection<BookingResponseDTO> getUserBookings(Integer userId, String state) {
+    public Collection<BookingResponseDTO> getUserBookings(Integer userId, String state, Integer from, Integer size) {
+        if (from < 0 || size <= 0) {
+            throw new ValidationException("Передан ошибочный параметр");
+        }
         if (!userRepository.existsById(userId)) {
             throw new EntityNotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
@@ -109,7 +113,8 @@ public class DBBookingService implements BookingService {
             throw new WrongStatusException("Unknown state: UNSUPPORTED_STATUS");
         }
         LocalDateTime now = LocalDateTime.now();
-        Collection<BookingResponseDTO> userBookings = bookingRepository.findUserBookings(userId);
+        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
+        Collection<BookingResponseDTO> userBookings = bookingRepository.findUserBookings(userId, page);
 
         switch (bookingState) {
             case CURRENT:
@@ -143,7 +148,10 @@ public class DBBookingService implements BookingService {
     }
 
     @Override
-    public Collection<BookingResponseDTO> getUserItemsBookings(Integer userId, String state) {
+    public Collection<BookingResponseDTO> getUserItemsBookings(Integer userId, String state, Integer from, Integer size) {
+        if (from < 0 || size <= 0) {
+            throw new ValidationException("Передан ошибочный параметр");
+        }
         if (!userRepository.existsById(userId)) {
             throw new EntityNotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
@@ -152,7 +160,8 @@ public class DBBookingService implements BookingService {
             throw new WrongStatusException("Unknown state: UNSUPPORTED_STATUS");
         }
         LocalDateTime now = LocalDateTime.now();
-        Collection<BookingResponseDTO> userItems = bookingRepository.findBookingsByOwner(userId);
+        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
+        Collection<BookingResponseDTO> userItems = bookingRepository.findBookingsByOwner(userId, page);
         switch (bookingState) {
             case CURRENT:
                 return userItems

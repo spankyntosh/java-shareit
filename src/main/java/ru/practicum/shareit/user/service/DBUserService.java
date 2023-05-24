@@ -13,7 +13,7 @@ import java.util.Collection;
 import static java.util.Objects.nonNull;
 import static ru.practicum.shareit.user.mapper.UserMapper.*;
 
-@Service("dbUserService")
+@Service
 public class DBUserService implements UserService {
 
     UserRepository userRepository;

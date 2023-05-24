@@ -22,6 +22,7 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .id(item.getId())
+                .requestId(item.getRequest() == null ? null : item.getRequest().getId())
                 .build();
     }
 
@@ -34,6 +35,7 @@ public class ItemMapper {
                 .id(item.getId())
                 .lastBooking(previous)
                 .nextBooking(next)
+                .requestId(isNull(item.getRequest()) ? null : item.getRequest().getId())
                 .build();
     }
 
