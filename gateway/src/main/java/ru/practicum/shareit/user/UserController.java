@@ -15,6 +15,7 @@ import javax.validation.constraints.Positive;
 @Slf4j
 public class UserController {
     private final UserClient userClient;
+
     @GetMapping
     public ResponseEntity<Object> getUsers() {
         log.info("Пришёл запрос на получение всех пользователей");
