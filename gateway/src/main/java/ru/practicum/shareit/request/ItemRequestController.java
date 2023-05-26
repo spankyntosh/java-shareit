@@ -3,17 +3,19 @@ package ru.practicum.shareit.request;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDTO;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 
 @RestController
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class ItemRequestController {
 
     private final ItemRequestClient requestService;
@@ -33,9 +35,9 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public ResponseEntity<Object> getOtherUsersItemRequests(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                            @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        log.info("Пришёл запрос на список запросов других пользователей от пользователя {}", userId);
+                                                            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
+                                                            @RequestParam(value = "size", defaultValue = "10") @Min(1) Integer size) {
+        log.info("Пришёл запрос на список запросов других пользователей от пользователя {} from={} size={}", userId, from, size);
         return requestService.getOtherUsersItemRequests(userId, from, size);
     }
 

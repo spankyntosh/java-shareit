@@ -24,8 +24,8 @@ public class BookingController {
     @GetMapping
     public ResponseEntity<Object> getBookings(@RequestHeader("X-Sharer-User-Id") long userId,
                                               @RequestParam(name = "state", defaultValue = "ALL") String stateParam,
-                                              @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                              @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                              @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                              @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Запрос на получение бронирования с state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
@@ -35,8 +35,8 @@ public class BookingController {
     @GetMapping("/owner")
     public ResponseEntity<Object> getUserItemsBookings(@RequestHeader("X-Sharer-User-Id") long userId,
                                                        @RequestParam(name = "state", defaultValue = "ALL") String stateParam,
-                                                       @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                       @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                                       @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                       @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         return bookingClient.getUserItemsBookings(userId, state, from, size);
