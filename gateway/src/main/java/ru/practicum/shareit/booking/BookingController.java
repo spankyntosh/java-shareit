@@ -50,7 +50,7 @@ public class BookingController {
         return bookingClient.bookItem(userId, requestDto);
     }
 
-    @PatchMapping
+    @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> patchItem(@RequestHeader("X-Sharer-User-Id") long userId,
                                             @PathVariable @Positive long bookingId,
                                             @RequestParam(name = "approved") boolean isApproved) {
