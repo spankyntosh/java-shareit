@@ -42,8 +42,8 @@ public class ItemController {
 
     @GetMapping
     ResponseEntity<Object> getUserItems(@RequestHeader("X-Sharer-User-Id") Integer id,
-                                        @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer from,
-                                        @RequestParam(required = false, defaultValue = "10") @Positive Integer size) {
+                                        @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                        @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
         log.info("Пришёл запрос на получение вещей у пользователя с id {}", id);
         return itemClient.getUserItems(id, from, size);
     }

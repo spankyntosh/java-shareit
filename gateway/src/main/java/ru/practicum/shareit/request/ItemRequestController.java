@@ -20,7 +20,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ResponseEntity<Object> createItemRequest(@RequestHeader("X-Sharer-User-Id") long userId,
-                                            @Valid @RequestBody ItemRequestDTO itemRequestDTO) {
+                                                    @Valid @RequestBody ItemRequestDTO itemRequestDTO) {
         log.info("Пришёл запрос на вещь от пользователя {} с описанием {}", userId, itemRequestDTO.getDescription());
         return requestService.createItemRequest(userId, itemRequestDTO);
     }
@@ -33,15 +33,15 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public ResponseEntity<Object> getOtherUsersItemRequests(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                                                 @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer from,
-                                                                                 @RequestParam(required = false, defaultValue = "10") @Positive Integer size) {
+                                                            @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Пришёл запрос на список запросов других пользователей от пользователя {}", userId);
         return requestService.getOtherUsersItemRequests(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
-        public ResponseEntity<Object> getRequestById(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                          @PathVariable @Positive long requestId) {
+    public ResponseEntity<Object> getRequestById(@RequestHeader("X-Sharer-User-Id") long userId,
+                                                 @PathVariable @Positive long requestId) {
         log.info("Пришёл запрос на получение запроса {} от пользователя {}", requestId, userId);
         return requestService.getRequestById(userId, requestId);
     }
