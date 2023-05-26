@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import javax.validation.constraints.PositiveOrZero;
 
 @RestController
 @RequestMapping(path = "/items")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class ItemController {
 
