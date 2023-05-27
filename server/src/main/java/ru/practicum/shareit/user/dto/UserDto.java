@@ -14,9 +14,6 @@ import javax.validation.constraints.NotBlank;
 @Builder(toBuilder = true)
 public class UserDto {
     private Integer id;
-    @NotBlank(message = "Имя пользователя не должно быть пустым")
     private String name;
-    @Email(message = "Неверно указан формат электронной почты")
-    @NotBlank(message = "почта пользователя не должно быть пустой")
     private String email;
 }
